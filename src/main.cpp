@@ -4,17 +4,14 @@
 #include <LoRa.h>
 
 int led = 6;
-int led2 = 5;
-int smd = 9;
+int received_value = 0;
+
 void setup()
 {
   Serial.begin(9600);
-  pinMode(led2, OUTPUT);
   pinMode(led, OUTPUT);
-  pinMode(smd, OUTPUT);
   while (!Serial)
     ;
-
   Serial.println("LoRa Receiver");
 
   if (!LoRa.begin(433E6))
@@ -37,8 +34,10 @@ void loop()
     // read packet
     while (LoRa.available())
     {
-      Serial.print((char)LoRa.read());
-      blink();
+      received_value = LoRa.read();
+      Serial.print((char)received_value);
+      //      Serial.print((char)LoRa.read());
+      (received_value == '5') ? blink() : digitalWrite(led, LOW);
     }
 
     // print RSSI of packet
@@ -50,11 +49,7 @@ void loop()
 void blink()
 {
   digitalWrite(led, HIGH);
-  digitalWrite(led2, HIGH);
-  digitalWrite(smd, HIGH);
-  delay(500);
+  delay(50);
   digitalWrite(led, LOW);
-  digitalWrite(led2, LOW);
-  digitalWrite(smd, LOW);
-  delay(800);
+  delay(50);
 }
